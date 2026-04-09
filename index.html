@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduStream Learning Hub | INF 424</title>
+  
+  <!-- Google Web Font – two-link preconnect pattern (Lab Guide Week 2, Step 1) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+   
+  </style>
+</head>
+<body>
+
+  <!-- Styled header: full name, student number, course code -->
+  <div class="header">
+    <h1>📚 EduStream Learning Hub</h1>
+    <p>Your Full Name | STU123456 | INF 424</p>
+  </div>
+
+  <!-- Non-temporal image asset using <picture> (Lab Guide Week 2, Step 2) -->
+  <!-- AVIF first, WebP second, JPEG fallback -->
+  <picture>
+    <source srcset="assets/images/hero.avif" type="image/avif">
+    <source srcset="assets/images/hero.webp" type="image/webp">
+    <img src="assets/images/hero.jpg" 
+         alt="Students collaborating on a multimedia project using laptops and tablets"
+         width="800" height="450">
+  </picture>
+
+  <!-- Inline SVG illustration (minimum 5 SVG elements) – Lab Guide Week 2, Step 3 -->
+  <!-- Accessible: role="img" and aria-label -->
+  <svg width="300" height="200" viewBox="0 0 300 200" 
+       role="img" aria-label="Educational diagram showing a book, a computer, a graduation cap, a lightbulb and a connecting arrow">
+    <!-- Element 1: Book (rectangle) -->
+    <rect x="20" y="50" width="70" height="50" fill="#2E75B6" rx="3" />
+    <!-- Element 2: Book spine (line) -->
+    <line x1="55" y1="50" x2="55" y2="100" stroke="#1F4E79" stroke-width="2" />
+    <!-- Element 3: Computer monitor (rectangle) -->
+    <rect x="110" y="40" width="70" height="45" fill="#E67E22" rx="3" />
+    <!-- Element 4: Monitor stand (rectangle) -->
+    <rect x="135" y="85" width="20" height="15" fill="#D35400" />
+    <!-- Element 5: Graduation cap (polygon) -->
+    <polygon points="210,30 250,30 230,15" fill="#27AE60" />
+    <!-- Element 6: Cap base (rectangle) -->
+    <rect x="222" y="30" width="16" height="12" fill="#1E8449" />
+    <!-- Element 7: Lightbulb (circle + line) – extra but within 5+ -->
+    <circle cx="150" cy="140" r="15" fill="#F1C40F" />
+    <line x1="150" y1="155" x2="150" y2="165" stroke="#333" stroke-width="2" />
+    <!-- Element 8: Connecting arrow (path) -->
+    <path d="M90 75 L105 62" stroke="#333" stroke-width="2" marker-end="url(#arrow)" />
+    <!-- Arrow marker definition -->
+    <defs>
+      <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+        <path d="M0,0 L8,4 L0,8 Z" fill="#333" />
+      </marker>
+    </defs>
+  </svg>
+
+  <footer>
+    <p>© 2025 Your Full Name – INF 424 Multimedia Programming</p>
+  </footer>
+
+</body>
+</html>
