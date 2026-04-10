@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduStream Learning Hub – Creative Lab (Animations)</title>
+  <title>EduStream Learning Hub – Creative Lab (Animations + Camera)</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -21,7 +21,7 @@
   </header>
 
   <main>
-    <h1 class="page-title">CSS & SVG Animation Showcase</h1>
+    <h1 class="page-title">CSS, SVG & Camera Playground</h1>
 
     <!-- 1. CSS Loading Spinner -->
     <section class="demo-section">
@@ -54,14 +54,12 @@
       <h2>✍️ SVG Draw‑on Path (stroke-dasharray / offset)</h2>
       <div class="svg-container">
         <svg width="400" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
-          <!-- Bezier curve path (C command) -->
           <path class="draw-path" 
                 d="M 30 150 C 80 30, 150 170, 250 80 C 300 40, 350 130, 370 160" 
                 fill="none" 
                 stroke="#22C55E" 
                 stroke-width="4" 
                 stroke-linecap="round" />
-          <!-- decorative dots -->
           <circle cx="30" cy="150" r="5" fill="#FFD966" />
           <circle cx="370" cy="160" r="5" fill="#FFD966" />
           <text x="10" y="190" fill="#aaa" font-size="12">Bezier curve draws itself →</text>
@@ -75,7 +73,6 @@
       <h2>🌙 Animated SVG Scene (6+ elements)</h2>
       <div class="svg-container">
         <svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
-          <!-- Background gradient sky -->
           <defs>
             <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stop-color="#0a0f2a" />
@@ -83,34 +80,51 @@
             </linearGradient>
           </defs>
           <rect width="400" height="300" fill="url(#skyGrad)" />
-
-          <!-- Stars (multiple elements) -->
           <circle class="star twinkle1" cx="50" cy="40" r="2" fill="#FFF" />
           <circle class="star twinkle2" cx="120" cy="70" r="1.5" fill="#FFF" />
           <circle class="star twinkle3" cx="280" cy="30" r="2" fill="#FFF" />
           <circle class="star twinkle4" cx="350" cy="90" r="1.8" fill="#FFF" />
           <circle class="star twinkle5" cx="200" cy="50" r="1.2" fill="#FFF" />
-          
-          <!-- Moon (pulsing opacity) -->
           <circle class="moon" cx="320" cy="70" r="30" fill="#FFEAA7" />
-          <circle cx="330" cy="65" r="6" fill="#0a0f2a" opacity="0.3" /> <!-- crater -->
-          
-          <!-- Mountains (static but part of 6+ elements) -->
+          <circle cx="330" cy="65" r="6" fill="#0a0f2a" opacity="0.3" />
           <polygon points="0,250 80,160 160,250" fill="#2d4a3e" />
           <polygon points="100,250 200,140 300,250" fill="#1e3a2f" />
           <polygon points="220,250 320,170 400,250" fill="#2d4a3e" />
-          
-          <!-- Animated shooting star -->
           <line class="shooting-star" x1="50" y1="20" x2="150" y2="80" stroke="#FFF" stroke-width="2" stroke-linecap="round" />
-          
-          <!-- Trees (simple) -->
           <rect x="60" y="230" width="8" height="20" fill="#5a3e2b" />
           <polygon points="48,230 64,200 80,230" fill="#2d6a4f" />
-          
           <rect x="340" y="240" width="8" height="15" fill="#5a3e2b" />
           <polygon points="330,240 344,215 358,240" fill="#2d6a4f" />
         </svg>
-        <p>⭐ Animated stars (twinkling), moon (pulsing), and a shooting star (moving). 12+ SVG elements.</p>
+        <p>⭐ Twinkling stars, pulsing moon, and a moving shooting star.</p>
+      </div>
+    </section>
+
+    <!-- ========== 5. LIVE CAMERA FILTER (Task C2) ========== -->
+    <section class="demo-section camera-section">
+      <h2>📸 Live Camera Filter Studio</h2>
+      <div class="camera-wrapper">
+        <!-- Live video feed -->
+        <div class="video-preview">
+          <video id="cameraVideo" autoplay muted></video>
+        </div>
+
+        <!-- Control buttons -->
+        <div class="camera-controls">
+          <button id="startCameraBtn" class="camera-btn primary">▶ Start Camera</button>
+          <button id="captureBtn" class="camera-btn" disabled>📸 Capture Frame</button>
+          <button id="greyscaleBtn" class="camera-btn" disabled>⚫ Greyscale Filter</button>
+          <button id="downloadBtn" class="camera-btn" disabled>💾 Download PNG</button>
+        </div>
+
+        <!-- Status messages -->
+        <div id="cameraStatus" class="camera-status" aria-live="polite"></div>
+
+        <!-- Preview canvas for captured/filtered image -->
+        <div class="preview-area">
+          <h3>Preview (Captured / Filtered)</h3>
+          <canvas id="previewCanvas" width="640" height="480"></canvas>
+        </div>
       </div>
     </section>
   </main>
@@ -118,5 +132,155 @@
   <footer class="page-footer">
     <p>CLIFFORD ISABOKE ONCHOMBA | INF 424 | EduStream Multimedia Hub</p>
   </footer>
+
+  <script>
+    (function() {
+      // Camera elements
+      const video = document.getElementById('cameraVideo');
+      const previewCanvas = document.getElementById('previewCanvas');
+      const previewCtx = previewCanvas.getContext('2d');
+      const captureCanvas = document.createElement('canvas'); // hidden, for processing
+      
+      const startBtn = document.getElementById('startCameraBtn');
+      const captureBtn = document.getElementById('captureBtn');
+      const greyscaleBtn = document.getElementById('greyscaleBtn');
+      const downloadBtn = document.getElementById('downloadBtn');
+      const statusDiv = document.getElementById('cameraStatus');
+
+      let mediaStream = null;
+      let currentImageData = null;   // stores the latest captured ImageData
+
+      function showMessage(msg, isError = false) {
+        statusDiv.innerHTML = msg;
+        statusDiv.style.color = isError ? '#ff8888' : '#88ff88';
+        console.log(msg);
+      }
+
+      function clearMessage() {
+        statusDiv.innerHTML = '✅ Ready. Click "Start Camera".';
+        statusDiv.style.color = '#ccc';
+      }
+
+      function setButtonsEnabled(enabled) {
+        captureBtn.disabled = !enabled;
+        greyscaleBtn.disabled = !enabled;
+        downloadBtn.disabled = !enabled;
+      }
+
+      // Start camera with error handling for NotAllowedError, NotFoundError, NotReadableError
+      async function startCamera() {
+        if (mediaStream) {
+          mediaStream.getTracks().forEach(track => track.stop());
+          video.srcObject = null;
+        }
+
+        const constraints = {
+          video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' },
+          audio: false
+        };
+
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia(constraints);
+          mediaStream = stream;
+          video.srcObject = stream;
+          await video.play();
+          showMessage('📷 Camera active. You can now capture frames.');
+          setButtonsEnabled(true);
+        } catch (err) {
+          let errorMsg = '';
+          switch (err.name) {
+            case 'NotAllowedError':
+              errorMsg = '❌ Permission denied. Please allow camera access in your browser.';
+              break;
+            case 'NotFoundError':
+              errorMsg = '❌ No camera found on this device. Please connect a camera.';
+              break;
+            case 'NotReadableError':
+              errorMsg = '❌ Camera is busy or not readable. Close other apps using the camera.';
+              break;
+            default:
+              errorMsg = `⚠️ Camera error: ${err.name} – ${err.message}`;
+          }
+          showMessage(errorMsg, true);
+          setButtonsEnabled(false);
+        }
+      }
+
+      // Capture current video frame to canvas and store ImageData
+      function captureFrame() {
+        if (!video.videoWidth || !video.videoHeight) {
+          showMessage('⚠️ No video feed. Please start the camera first.', true);
+          return;
+        }
+
+        const width = video.videoWidth;
+        const height = video.videoHeight;
+        captureCanvas.width = width;
+        captureCanvas.height = height;
+        previewCanvas.width = width;
+        previewCanvas.height = height;
+
+        const ctx = captureCanvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, width, height);
+        currentImageData = ctx.getImageData(0, 0, width, height);
+        
+        // Show on preview
+        previewCtx.putImageData(currentImageData, 0, 0);
+        showMessage('📸 Frame captured. You can now apply greyscale or download.');
+        greyscaleBtn.disabled = false;
+        downloadBtn.disabled = false;
+      }
+
+      // Apply greyscale using human-perception luminance formula
+      function applyGreyscale() {
+        if (!currentImageData) {
+          showMessage('⚠️ No captured frame. Click "Capture Frame" first.', true);
+          return;
+        }
+
+        const data = currentImageData.data;
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i];
+          const g = data[i+1];
+          const b = data[i+2];
+          const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+          data[i] = luminance;
+          data[i+1] = luminance;
+          data[i+2] = luminance;
+        }
+        previewCtx.putImageData(currentImageData, 0, 0);
+        showMessage('⚫ Greyscale filter applied (ITU-R BT.601 formula).');
+      }
+
+      // Download preview canvas as PNG
+      function downloadPNG() {
+        if (!previewCanvas.width || !previewCanvas.height) {
+          showMessage('⚠️ No image to download. Capture or filter a frame first.', true);
+          return;
+        }
+        try {
+          const dataURL = previewCanvas.toDataURL('image/png');
+          const link = document.createElement('a');
+          const timestamp = new Date().toISOString().slice(0,19).replace(/:/g, '-');
+          link.download = `edustream-cam-${timestamp}.png`;
+          link.href = dataURL;
+          link.click();
+          showMessage('💾 PNG download started.');
+        } catch (err) {
+          showMessage(`Download failed: ${err.message}`, true);
+        }
+      }
+
+      // Event listeners
+      startBtn.addEventListener('click', startCamera);
+      captureBtn.addEventListener('click', captureFrame);
+      greyscaleBtn.addEventListener('click', applyGreyscale);
+      downloadBtn.addEventListener('click', downloadPNG);
+
+      // Initial state
+      setButtonsEnabled(false);
+      clearMessage();
+    })();
+  </script>
 </body>
 </html>
