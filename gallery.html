@@ -50,16 +50,28 @@
   <script>
     // ---------- MEDIA LIBRARY DATA ARRAY (8+ objects) ----------
     const mediaLibrary = [
-      { id: 1, title: "Introduction to HTML5", type: "video", thumbnail: "https://picsum.photos/id/0/300/200", duration: "12:34", description: "Learn the basics of HTML5 semantics and structure." },
-      { id: 2, title: "CSS Grid Masterclass", type: "video", thumbnail: "https://picsum.photos/id/1/300/200", duration: "18:22", description: "Build responsive layouts with CSS Grid." },
-      { id: 3, title: "JavaScript Promises", type: "video", thumbnail: "https://picsum.photos/id/2/300/200", duration: "09:47", description: "Async/await and promise chaining explained." },
-      { id: 4, title: "Podcast: Web Audio API", type: "audio", thumbnail: "https://picsum.photos/id/3/300/200", duration: "45:00", description: "Deep dive into audio synthesis and processing." },
-      { id: 5, title: "Interview with a Developer", type: "audio", thumbnail: "https://picsum.photos/id/4/300/200", duration: "32:15", description: "Career insights and coding tips." },
-      { id: 6, title: "SVG Illustration Guide", type: "image", thumbnail: "https://picsum.photos/id/5/300/200", duration: null, description: "Step‑by‑step vector graphics tutorial." },
-      { id: 7, title: "Camera API Workshop", type: "video", thumbnail: "https://picsum.photos/id/6/300/200", duration: "24:08", description: "Access webcam and apply filters." },
-      { id: 8, title: "UI Design Principles", type: "image", thumbnail: "https://picsum.photos/id/7/300/200", duration: null, description: "Visual hierarchy and colour theory." },
-      { id: 9, title: "Ambient Music Mix", type: "audio", thumbnail: "https://picsum.photos/id/8/300/200", duration: "1:12:30", description: "Relaxing study music." },
-      { id: 10, title: "React Components 101", type: "video", thumbnail: "https://picsum.photos/id/9/300/200", duration: "15:42", description: "Building reusable UI components." }
+      // Videos
+      { id: 1, title: "Convert Python to Executable", type: "video", thumbnail: "assets/video/poster.jpg", duration: "15:42", description: "Learn how to convert Python scripts to standalone executables." },
+      { id: 2, title: "JavaScript Tutorial", type: "video", thumbnail: "assets/video/poster.jpg", duration: "12:34", description: "Introduction to JavaScript programming." },
+      { id: 3, title: "Kelly Programming", type: "video", thumbnail: "assets/video/poster.jpg", duration: "18:22", description: "Programming tutorial with Kelly." },
+      { id: 4, title: "Raddy Programming", type: "video", thumbnail: "assets/video/poster.jpg", duration: "24:08", description: "Advanced programming concepts." },
+      
+      // Audio
+      { id: 5, title: "AI Warning Message", type: "audio", thumbnail: "assets/images/hero.png", duration: "00:15", description: "Warning about artificial intelligence." },
+      { id: 6, title: "HAL 9000 Quote", type: "audio", thumbnail: "assets/images/hero.png", duration: "00:08", description: "Famous quote from HAL 9000." },
+      { id: 7, title: "Machine Speech", type: "audio", thumbnail: "assets/images/hero.png", duration: "00:12", description: "Things a machine might say." },
+      { id: 8, title: "System Voice", type: "audio", thumbnail: "assets/images/hero.png", duration: "00:10", description: "Augmented female system voice." },
+      { id: 9, title: "Computer Mouse Sound", type: "audio", thumbnail: "assets/images/hero.png", duration: "00:05", description: "Sound effect of a computer mouse." },
+      { id: 10, title: "Fun Python", type: "audio", thumbnail: "assets/images/py.jpg", duration: "45:00", description: "Fun Python programming audio." },
+      
+      // Images
+      { id: 11, title: "Hero Image AVIF", type: "image", thumbnail: "assets/images/hero.avif", duration: null, description: "Hero image in AVIF format." },
+      { id: 12, title: "Hero Image PNG", type: "image", thumbnail: "assets/images/hero.png", duration: null, description: "Hero image in PNG format." },
+      { id: 13, title: "Hero Image WebP", type: "image", thumbnail: "assets/images/hero.webp", duration: null, description: "Hero image in WebP format." },
+      { id: 14, title: "Pavel Danilyuk Photo", type: "image", thumbnail: "assets/images/pexels-pavel-danilyuk-8423045.jpg", duration: null, description: "Photography by Pavel Danilyuk." },
+      { id: 15, title: "Unique Digitals Photo", type: "image", thumbnail: "assets/images/pexels-unique-digitals-154779423-10614240.jpg", duration: null, description: "Photography by Unique Digitals." },
+      { id: 16, title: "Workman Photo", type: "image", thumbnail: "assets/images/pexels-workman-19344119.jpg", duration: null, description: "Photography by Workman." },
+      { id: 17, title: "Python Logo", type: "image", thumbnail: "assets/images/py.jpg", duration: null, description: "Python programming language logo." }
     ];
 
     // ---------- PURE FUNCTION: renderMediaCard(item) ----------
