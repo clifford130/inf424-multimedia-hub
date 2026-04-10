@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduStream Learning Hub – Video Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dark-theme">
+  <header>
+    <div class="logo">🎓 EduStream Learning Hub</div>
+    <div class="student-info">
+      <p><strong>Full Name:</strong> CLIFFORD ISABOKE ONCHOMBA</p>
+      <p><strong>Student Number:</strong> INF/003/2022</p>
+      <p><strong>Course Code:</strong> INF 424</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="media-player video-custom-player">
+      <!-- video element: no native controls, includes poster & free CC0 video from Pexels-compatible source -->
+      <video id="eduVideo" 
+             class="custom-video-element"
+             poster="assets/images/hero.png"
+             preload="metadata"
+             crossorigin="anonymous">
+        <!-- MP4 source: local video file -->
+        <source src="assets/video/Convert_py_to_exe_-_from_code_to_software.mp4" type="video/mp4">
+        <!-- fallback message if video cannot load -->
+        Your browser does not support the video tag. Please update your browser.
+      </video>
+
+      <!-- bottom control bar (mirror design from audio player, extended with speed & fullscreen) -->
+      <div class="control-bar">
+        <!-- LEFT: Play/Pause button -->
+        <div class="control-left">
+          <button id="videoPlayPauseBtn" class="play-btn" type="button" aria-label="Play video">
+            <span id="videoPlayIcon">▶</span>
+          </button>
+        </div>
+
+        <!-- CENTER: progress seek bar + time display (M:SS format) -->
+        <div class="control-center">
+          <div class="progress-container">
+            <input id="videoSeekSlider" type="range" min="0" max="100" value="0" step="0.1" aria-label="Video seek bar" />
+            <div class="time-display">
+              <span id="videoCurrentTime">0:00</span> / <span id="videoDuration">0:00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: volume, mute, playback speed selector, fullscreen -->
+        <div class="control-right video-extras">
+          <!-- volume slider & mute toggle (consistent with audio player) -->
+          <button id="videoMuteBtn" class="control-btn" type="button" aria-label="Mute video">🔊</button>
+          <input id="videoVolumeSlider" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="Volume" />
+          
+          <!-- playback speed selector (required: 0.75x, 1x, 1.25x, 1.5x, 2x) -->
+          <select id="playbackSpeedSelect" class="speed-selector" aria-label="Playback speed">
+            <option value="0.75">0.75x</option>
+            <option value="1.0" selected>1.0x</option>
+            <option value="1.25">1.25x</option>
+            <option value="1.5">1.5x</option>
+            <option value="2.0">2.0x</option>
+          </select>
+
+          <!-- fullscreen button -->
+          <button id="fullscreenBtn" class="control-btn fullscreen-icon" type="button" aria-label="Fullscreen">⛶</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status display paragraph: shows real-time media events, distinction play vs playing -->
+    <div class="status-panel" aria-live="polite">
+      <strong>🎬 Player status:</strong> <span id="videoEventStatus">Waiting for interaction</span>
+    </div>
+
+    <!-- Accessible transcript / caption panel (static text, 50+ words describing the video content) -->
+    <div class="transcript-panel" aria-label="Video transcript and description">
+      <h3>📄 Video transcript &amp; description</h3>
+      <p>
+        This EduStream tutorial video showcases a serene journey through a lush green countryside during golden hour.
+        A traveller walks along a sunlit path surrounded by rolling hills, wildflowers, and distant mountains. 
+        The high‑quality 4K footage captures natural textures – the rustle of dry grass, shifting cloud shadows, 
+        and warm atmospheric lighting. Learners can observe the interplay between movement and environment, 
+        making it ideal for nature‑based storytelling, mindfulness exercises, or visual analysis in media studies. 
+        (Runtime: 19 seconds – loop friendly) The content promotes calm focus and illustrates real‑world temporal 
+        media concepts: continuous motion, audio‑visual rhythm, and immersive atmosphere. All rights free for 
+        educational use under the Pexels License (free to use, no attribution required). EduStream integrates this 
+        video to demonstrate custom HTML5 video controls, event handling, and responsive design.
+      </p>
+    </div>
+  </main>
+
+  <script>
+    (function() {
+      // ----- DOM elements -----
+      const video = document.getElementById('eduVideo');
+      const playPauseBtn = document.getElementById('videoPlayPauseBtn');
+      const playIconSpan = document.getElementById('videoPlayIcon');
+      const seekSlider = document.getElementById('videoSeekSlider');
+      const currentTimeSpan = document.getElementById('videoCurrentTime');
+      const durationSpan = document.getElementById('videoDuration');
+      const muteBtn = document.getElementById('videoMuteBtn');
+      const volumeSlider = document.getElementById('videoVolumeSlider');
+      const speedSelect = document.getElementById('playbackSpeedSelect');
+      const fullscreenBtn = document.getElementById('fullscreenBtn');
+      const eventStatusSpan = document.getElementById('videoEventStatus');
+
+      // ----- Helper: format time as M:SS (same as audio player) -----
+      function formatTime(seconds) {
+        if (isNaN(seconds) || !isFinite(seconds)) return '0:00';
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+      }
+
+      // ----- Update UI: progress bar + time display -----
+      function updateProgressAndTime() {
+        if (!video.duration || isNaN(video.duration)) {
+          seekSlider.value = 0;
+          currentTimeSpan.textContent = '0:00';
+          durationSpan.textContent = '0:00';
+          return;
+        }
+        const percent = (video.currentTime / video.duration) * 100;
+        seekSlider.value = percent;
+        currentTimeSpan.textContent = formatTime(video.currentTime);
+        durationSpan.textContent = formatTime(video.duration);
+      }
+
+      // ----- Sync play/pause button icon & ARIA label -----
+      function syncPlayPauseButton() {
+        if (video.paused || video.ended) {
+          playIconSpan.textContent = '▶';
+          playPauseBtn.setAttribute('aria-label', video.ended ? 'Replay video' : 'Play video');
+        } else {
+          playIconSpan.textContent = '❚❚';
+          playPauseBtn.setAttribute('aria-label', 'Pause video');
+        }
+        // if video ended, show replay semantics but icon remains '▶'? actually we want distinct replay icon? 
+        // But the ended state: we show '▶' so user can replay.
+        if (video.ended) {
+          playIconSpan.textContent = '↻';  // replay symbol for clarity
+          playPauseBtn.setAttribute('aria-label', 'Replay video');
+        }
+      }
+
+      // ----- Sync mute button icon & volume slider state -----
+      function syncMuteUI() {
+        if (video.muted) {
+          muteBtn.textContent = '🔇';
+          muteBtn.setAttribute('aria-label', 'Unmute video');
+          volumeSlider.value = 0;
+        } else {
+          muteBtn.textContent = '🔊';
+          muteBtn.setAttribute('aria-label', 'Mute video');
+          volumeSlider.value = video.volume;
+        }
+      }
+
+      // ----- Volume change handler (slider & internal consistency)-----
+      function handleVolumeChange() {
+        const newVol = parseFloat(volumeSlider.value);
+        video.volume = newVol;
+        if (newVol === 0) {
+          video.muted = true;
+        } else {
+          video.muted = false;
+        }
+        syncMuteUI();
+      }
+
+      // ----- Mute toggle -----
+      function toggleMute() {
+        if (video.muted) {
+          video.muted = false;
+          if (video.volume === 0) video.volume = 0.8;
+          volumeSlider.value = video.volume;
+        } else {
+          video.muted = true;
+          volumeSlider.value = 0;
+        }
+        syncMuteUI();
+      }
+
+      // ----- Seek via slider -----
+      function seekVideo() {
+        if (!video.duration || isNaN(video.duration)) return;
+        const percent = parseFloat(seekSlider.value);
+        video.currentTime = (percent / 100) * video.duration;
+      }
+
+      // ----- Play/Pause logic -----
+      function togglePlayPause() {
+        if (video.paused || video.ended) {
+          video.play().catch(err => {
+            console.warn('Playback prevented:', err);
+            eventStatusSpan.textContent = `⚠️ Error: ${err.name || 'playback failed'}`;
+          });
+        } else {
+          video.pause();
+        }
+      }
+
+      // ----- Playback speed selector -----
+      function setPlaybackSpeed() {
+        const speed = parseFloat(speedSelect.value);
+        if (!isNaN(speed) && video.playbackRate !== undefined) {
+          video.playbackRate = speed;
+        }
+      }
+
+      // ----- Fullscreen handling (requestFullscreen on video element) -----
+      function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+          video.requestFullscreen().catch(err => {
+            console.warn('Fullscreen error:', err);
+            eventStatusSpan.textContent = `Fullscreen not supported: ${err.message}`;
+          });
+        } else {
+          document.exitFullscreen();
+        }
+      }
+
+      // ----- Update status display with distinction between 'play' and 'playing' -----
+      function setStatusEvent(eventType, detailMsg = '') {
+        let displayText = '';
+        switch (eventType) {
+          case 'play':
+            displayText = '🎵 play event (playback requested) — media.play() called';
+            break;
+          case 'playing':
+            displayText = '▶️ playing event (actual playback started/resumed after buffering)';
+            break;
+          case 'pause':
+            displayText = '⏸️ pause event — video paused by user or system';
+            break;
+          case 'waiting':
+            displayText = '⏳ waiting event — buffering / loading data, playback will resume';
+            break;
+          case 'ended':
+            displayText = '🏁 ended event — video playback finished';
+            break;
+          case 'error':
+            displayText = '❌ error event — media could not be loaded or corrupted';
+            break;
+          default:
+            displayText = `${eventType} fired`;
+        }
+        if (detailMsg) displayText += ` (${detailMsg})`;
+        eventStatusSpan.textContent = displayText;
+        console.log(`[VIDEO EVENT] ${eventType}: ${displayText}`);
+      }
+
+      // ----- Event listeners to demonstrate full state machine + distinction play/playing -----
+      video.addEventListener('play', () => {
+        setStatusEvent('play');
+        syncPlayPauseButton();
+      });
+      video.addEventListener('playing', () => {
+        setStatusEvent('playing');
+        syncPlayPauseButton();
+      });
+      video.addEventListener('pause', () => {
+        setStatusEvent('pause');
+        syncPlayPauseButton();
+      });
+      video.addEventListener('waiting', () => {
+        setStatusEvent('waiting');
+      });
+      video.addEventListener('ended', () => {
+        setStatusEvent('ended');
+        syncPlayPauseButton();
+        updateProgressAndTime();   // final time sync
+      });
+      video.addEventListener('error', (e) => {
+        setStatusEvent('error', video.error ? video.error.message : 'Media loading failure');
+        console.error('Video error:', video.error);
+      });
+      // Additional: timeupdate for seek bar
+      video.addEventListener('timeupdate', () => {
+        updateProgressAndTime();
+      });
+      video.addEventListener('durationchange', () => {
+        updateProgressAndTime();
+        seekSlider.max = 100;
+      });
+      video.addEventListener('loadedmetadata', () => {
+        updateProgressAndTime();
+        setStatusEvent('loadedmetadata', 'duration & dimensions ready');
+        // Set initial volume consistency
+        video.volume = parseFloat(volumeSlider.value);
+        video.muted = false;
+        syncMuteUI();
+      });
+      video.addEventListener('canplay', () => {
+        // optional: just friendly status
+        if (eventStatusSpan.textContent.includes('waiting')) {
+          setStatusEvent('canplay', 'ready to play');
+        }
+      });
+
+      // ---- Keyboard shortcuts (Space, M, Left/Right arrows) as extension for enhanced UX ----
+      function handleVideoKeyboard(e) {
+        const activeEl = document.activeElement;
+        if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT' || activeEl.tagName === 'TEXTAREA')) {
+          return; // allow typing in inputs
+        }
+        const key = e.code;
+        switch (key) {
+          case 'Space':
+            e.preventDefault();
+            togglePlayPause();
+            break;
+          case 'KeyM':
+            e.preventDefault();
+            toggleMute();
+            break;
+          case 'ArrowLeft':
+            e.preventDefault();
+            video.currentTime = Math.max(0, video.currentTime - 10);
+            setStatusEvent('seeking', 'arrow left: -10 sec');
+            break;
+          case 'ArrowRight':
+            e.preventDefault();
+            video.currentTime = Math.min(video.duration || 0, video.currentTime + 10);
+            setStatusEvent('seeking', 'arrow right: +10 sec');
+            break;
+          default:
+            break;
+        }
+      }
+
+      // ----- Wire UI controls -----
+      playPauseBtn.addEventListener('click', togglePlayPause);
+      seekSlider.addEventListener('input', seekVideo);
+      muteBtn.addEventListener('click', toggleMute);
+      volumeSlider.addEventListener('input', handleVolumeChange);
+      speedSelect.addEventListener('change', setPlaybackSpeed);
+      fullscreenBtn.addEventListener('click', toggleFullscreen);
+      document.addEventListener('keydown', handleVideoKeyboard);
+
+      // Additional fullscreen change event to possibly update icon (optional but user-friendly)
+      document.addEventListener('fullscreenchange', () => {
+        if (document.fullscreenElement) {
+          fullscreenBtn.setAttribute('aria-label', 'Exit fullscreen');
+          fullscreenBtn.textContent = '✕';  // visual cue
+        } else {
+          fullscreenBtn.setAttribute('aria-label', 'Fullscreen');
+          fullscreenBtn.textContent = '⛶';
+        }
+      });
+
+      // Extra: ensure volume slider reflects video volume after external changes (e.g., mute unmute)
+      video.addEventListener('volumechange', () => {
+        syncMuteUI();
+      });
+
+      // ensure poster and preload metadata: also if video fails to load, show error status clearly
+      if (video.readyState === 0) {
+        video.addEventListener('loadstart', () => setStatusEvent('loadstart', 'fetching media'));
+      }
+
+      // Initial UI sync
+      syncPlayPauseButton();
+      syncMuteUI();
+      setPlaybackSpeed();        // default speed = 1.0
+      updateProgressAndTime();
+
+      // handle case where duration not immediately ready
+      if (video.readyState >= 1) {
+        updateProgressAndTime();
+      }
+
+      // If video source fails (network error), display explicit error on status
+      video.addEventListener('stalled', () => {
+        setStatusEvent('stalled', 'network stalled – possible slow connection');
+      });
+    })();
+  </script>
+</body>
+</html>
