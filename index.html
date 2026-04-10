@@ -1,69 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EduStream Learning Hub | INF 424</title>
-  
-  <!-- Google Web Font – two-link preconnect pattern (Lab Guide Week 2, Step 1) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/styles.css">
-  <style>
-   
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduStream Learning Hub</title>
+    <!-- Preconnect to Google Fonts for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
 </head>
 <body>
+    <header>
+        <div class="logo">EduStream Learning Hub</div>
+        <div class="student-info">
+            <p><strong>Full Name:</strong> CLIFFORD ISABOKE ONCHOMBA</p>
+            <p><strong>Student Number:</strong> INF/003/2022</p>
+            <p><strong>Course Code:</strong> INF 424</p>
+        </div>
+    </header>
 
-  <!-- Styled header: full name, student number, course code -->
-  <div class="header">
-    <h1>📚 EduStream Learning Hub</h1>
-    <p>Your Full Name | STU123456 | INF 424</p>
-  </div>
+    <main>
+        <section class="hero-section">
+            <h1>Welcome to EduStream Learning Hub</h1>
+            <p>Empowering learners with modern educational tools and resources.</p>
+            <picture>
+                <source srcset="assets/images/hero.avif" type="image/avif">
+                <source srcset="assets/images/hero.webp" type="image/webp">
+                <img src="assets/images/hero.jpg" alt="Students collaborating in a modern learning environment with digital devices" width="800" height="600" class="hero-image">
+            </picture>
+        </section>
 
-  <!-- Non-temporal image asset using <picture> (Lab Guide Week 2, Step 2) -->
-  <!-- AVIF first, WebP second, JPEG fallback -->
-  <picture>
-    <source srcset="assets/images/hero.avif" type="image/avif">
-    <source srcset="assets/images/hero.webp" type="image/webp">
-    <img src="assets/images/hero.jpg" 
-         alt="Students collaborating on a multimedia project using laptops and tablets"
-         width="800" height="450">
-  </picture>
-
-  <!-- Inline SVG illustration (minimum 5 SVG elements) – Lab Guide Week 2, Step 3 -->
-  <!-- Accessible: role="img" and aria-label -->
-  <svg width="300" height="200" viewBox="0 0 300 200" 
-       role="img" aria-label="Educational diagram showing a book, a computer, a graduation cap, a lightbulb and a connecting arrow">
-    <!-- Element 1: Book (rectangle) -->
-    <rect x="20" y="50" width="70" height="50" fill="#2E75B6" rx="3" />
-    <!-- Element 2: Book spine (line) -->
-    <line x1="55" y1="50" x2="55" y2="100" stroke="#1F4E79" stroke-width="2" />
-    <!-- Element 3: Computer monitor (rectangle) -->
-    <rect x="110" y="40" width="70" height="45" fill="#E67E22" rx="3" />
-    <!-- Element 4: Monitor stand (rectangle) -->
-    <rect x="135" y="85" width="20" height="15" fill="#D35400" />
-    <!-- Element 5: Graduation cap (polygon) -->
-    <polygon points="210,30 250,30 230,15" fill="#27AE60" />
-    <!-- Element 6: Cap base (rectangle) -->
-    <rect x="222" y="30" width="16" height="12" fill="#1E8449" />
-    <!-- Element 7: Lightbulb (circle + line) – extra but within 5+ -->
-    <circle cx="150" cy="140" r="15" fill="#F1C40F" />
-    <line x1="150" y1="155" x2="150" y2="165" stroke="#333" stroke-width="2" />
-    <!-- Element 8: Connecting arrow (path) -->
-    <path d="M90 75 L105 62" stroke="#333" stroke-width="2" marker-end="url(#arrow)" />
-    <!-- Arrow marker definition -->
-    <defs>
-      <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
-        <path d="M0,0 L8,4 L0,8 Z" fill="#333" />
-      </marker>
-    </defs>
-  </svg>
-
-  <footer>
-    <p>© 2025 Your Full Name – INF 424 Multimedia Programming</p>
-  </footer>
-
+        <section class="illustration-section">
+            <svg class="illustration" viewBox="0 0 400 300" role="img" aria-label="Educational illustration showing learning dashboard with books, computer, and growth chart">
+                <!-- Background rectangle -->
+                <rect width="400" height="300" fill="#e8f4f8"/>
+                <!-- Book -->
+                <rect x="50" y="100" width="60" height="40" fill="#4a90e2" rx="5"/>
+                <rect x="55" y="110" width="50" height="3" fill="#fff"/>
+                <rect x="55" y="118" width="35" height="3" fill="#fff"/>
+                <!-- Computer screen -->
+                <rect x="150" y="80" width="80" height="60" fill="#333" rx="5"/>
+                <rect x="160" y="90" width="60" height="40" fill="#1e90ff"/>
+                <!-- Growth chart -->
+                <line x1="280" y1="200" x2="280" y2="120" stroke="#333" stroke-width="3"/>
+                <line x1="280" y1="200" x2="350" y2="200" stroke="#333" stroke-width="3"/>
+                <polygon points="285,180 295,170 305,180" fill="#4caf50"/>
+                <polygon points="310,160 320,150 330,160" fill="#4caf50"/>
+                <polygon points="335,140 345,130 355,140" fill="#4caf50"/>
+                <!-- Text -->
+                <text x="200" y="250" text-anchor="middle" font-family="Poppins, sans-serif" font-size="16" fill="#333">Learning Dashboard</text>
+            </svg>
+        </section>
+    </main>
 </body>
 </html>
