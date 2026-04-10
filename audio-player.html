@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduStream Learning Hub – Audio Player</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dark-theme">
+  <!-- Reused Header (identical to index.html) -->
+  <header>
+    <div class="logo">EduStream Learning Hub</div>
+    <div class="student-info">
+      <p><strong>Full Name:</strong> CLIFFORD ISABOKE ONCHOMBA</p>
+      <p><strong>Student Number:</strong> INF/003/2022</p>
+      <p><strong>Course Code:</strong> INF 424</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="media-player">
+      <!-- Visual Area (for audio, minimal) -->
+      <div class="player-visual">
+        <div id="status" class="status-overlay" aria-live="polite"></div>
+      </div>
+      
+      <!-- Bottom Control Bar -->
+      <div class="control-bar">
+        <!-- Left: Play/Pause -->
+        <div class="control-left">
+          <button id="play-pause" class="play-btn" type="button" aria-label="Play audio">
+            <span id="play-icon">▶</span>
+          </button>
+        </div>
+        
+        <!-- Center: Progress + Time -->
+        <div class="control-center">
+          <div class="progress-container">
+            <input id="seek-slider" type="range" min="0" max="100" value="0" step="0.1" aria-label="Seek through audio" />
+            <div class="time-display">
+              <span id="current-time">0:00</span> / <span id="duration-time">0:00</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Right: Controls -->
+        <div class="control-right">
+          <button id="rewind" class="control-btn" type="button" aria-label="Rewind 10 seconds">⏪</button>
+          <button id="forward" class="control-btn" type="button" aria-label="Forward 10 seconds">⏩</button>
+          <button id="mute-toggle" class="control-btn" type="button" aria-label="Mute audio">🔊</button>
+          <input id="volume-slider" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="Adjust volume" />
+        </div>
+      </div>
+    </div>
+    
+    <!-- Hidden native audio element -->
+    <audio id="audio" src="assets/audio/fun python.mp3"></audio>
+  </main>
+
+  <script>
+    // Grab UI elements
+    const audio = document.getElementById('audio');
+    const playPauseBtn = document.getElementById('play-pause');
+    const playIcon = document.getElementById('play-icon');
+    const statusEl = document.getElementById('status');
+    const seekSlider = document.getElementById('seek-slider');
+    const curTimeEl = document.getElementById('current-time');
+    const durTimeEl = document.getElementById('duration-time');
+    const volumeSlider = document.getElementById('volume-slider');
+    const muteBtn = document.getElementById('mute-toggle');
+    const rewindBtn = document.getElementById('rewind');
+    const forwardBtn = document.getElementById('forward');
+
+    // Status messages map (minimal)
+    const statusMsg = {
+      loadstart: 'loading…',
+      loadeddata: '',
+      play: '',
+      pause: '',
+      waiting: 'buffering…',
+      playing: '',
+      ended: '',
+      error: 'error'
+    };
+
+    // Format seconds → M:SS
+    function fmt_time(seconds) {
+      const s = Number.isFinite(seconds) && seconds >= 0 ? seconds : 0;
+      const m = Math.floor(s / 60);
+      const sec = Math.floor(s % 60);
+      return `${m}:${sec.toString().padStart(2, '0')}`;
+    }
+
+    // Update UI helpers
+    function updateStatus(eventType) {
+      statusEl.textContent = statusMsg[eventType] || '';
+    }
+
+    function updateSeek() {
+      if (!audio.duration || Number.isNaN(audio.currentTime)) {
+        seekSlider.value = 0;
+        curTimeEl.textContent = '0:00';
+        durTimeEl.textContent = '0:00';
+        return;
+      }
+      const percent = (audio.currentTime / audio.duration) * 100;
+      seekSlider.value = percent;
+      curTimeEl.textContent = fmt_time(audio.currentTime);
+      durTimeEl.textContent = fmt_time(audio.duration);
+    }
+
+    function syncPlayButton() {
+      if (audio.ended) {
+        playIcon.textContent = '↻';
+        playPauseBtn.setAttribute('aria-label', 'Replay audio');
+        return;
+      }
+      if (audio.paused) {
+        playIcon.textContent = '▶';
+        playPauseBtn.setAttribute('aria-label', 'Play audio');
+      } else {
+        playIcon.textContent = '❚❚';
+        playPauseBtn.setAttribute('aria-label', 'Pause audio');
+      }
+    }
+
+    function syncMute() {
+      muteBtn.textContent = audio.muted ? '🔇' : '🔊';
+      muteBtn.setAttribute('aria-label', audio.muted ? 'Unmute audio' : 'Mute audio');
+    }
+
+    function syncVolume() {
+      audio.volume = Number(volumeSlider.value);
+      audio.muted = audio.volume <= 0;
+      syncMute();
+    }
+
+    // Event handlers
+    function togglePlay() {
+      if (audio.paused || audio.ended) {
+        audio.play().catch(err => {
+          console.error('Play failed', err);
+          updateStatus('error');
+        });
+      } else {
+        audio.pause();
+      }
+    }
+
+    function toggleMute() {
+      audio.muted = !audio.muted;
+      if (audio.muted) {
+        volumeSlider.value = 0;
+      } else {
+        volumeSlider.value = audio.volume || 0.8;
+      }
+      syncMute();
+    }
+
+    function seekAudio() {
+      if (!audio.duration) return;
+      const pct = Number(seekSlider.value);
+      audio.currentTime = (pct / 100) * audio.duration;
+    }
+
+    function rewind10() {
+      audio.currentTime = Math.max(0, audio.currentTime - 10);
+    }
+
+    function forward10() {
+      audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 10);
+    }
+
+    function handleKeyboard(e) {
+      const active = document.activeElement;
+      const typing = active && ['INPUT', 'TEXTAREA', 'SELECT'].includes(active.tagName);
+      if (typing) return;
+      switch (e.code) {
+        case 'Space':
+          e.preventDefault();
+          togglePlay();
+          break;
+        case 'KeyM':
+          e.preventDefault();
+          toggleMute();
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          rewind10();
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          forward10();
+          break;
+      }
+    }
+
+    // Attach listeners
+    playPauseBtn.addEventListener('click', togglePlay);
+    muteBtn.addEventListener('click', toggleMute);
+    seekSlider.addEventListener('input', seekAudio);
+    volumeSlider.addEventListener('input', syncVolume);
+    rewindBtn.addEventListener('click', rewind10);
+    forwardBtn.addEventListener('click', forward10);
+    document.addEventListener('keydown', handleKeyboard);
+
+    audio.addEventListener('loadstart', () => updateStatus('loadstart'));
+    audio.addEventListener('loadeddata', () => { updateStatus('loadeddata'); updateSeek(); syncPlayButton(); });
+    audio.addEventListener('play', () => { updateStatus('play'); syncPlayButton(); });
+    audio.addEventListener('pause', () => { updateStatus('pause'); syncPlayButton(); });
+    audio.addEventListener('waiting', () => updateStatus('waiting'));
+    audio.addEventListener('playing', () => updateStatus('playing'));
+    audio.addEventListener('ended', () => { updateStatus('ended'); syncPlayButton(); });
+    audio.addEventListener('timeupdate', updateSeek);
+    audio.addEventListener('durationchange', updateSeek);
+    audio.addEventListener('error', () => updateStatus('error'));
+
+    // Initial UI sync
+    audio.volume = 0.8;
+    syncMute();
+    syncPlayButton();
+  </script>
+</body>
+</html>
