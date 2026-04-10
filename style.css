@@ -464,3 +464,168 @@ main {
         font-size: 0.8rem;
     }
 }
+
+/* ========== ANIMATIONS PAGE (Task C1) ========== */
+.page-title {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #22C55E;
+    font-weight: 600;
+}
+
+.demo-section {
+    background: #0e0e0e;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid #2a2a2a;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.demo-section h2 {
+    color: #FFD966;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+/* 1. CSS Loading Spinner */
+.spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 5px solid #2a2a2a;
+    border-top-color: #22C55E;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 2. Card Component with Hover Transitions */
+.cards-grid {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.animated-card {
+    background: #1a1a1a;
+    border-radius: 12px;
+    padding: 1.5rem;
+    width: 220px;
+    text-align: center;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.animated-card:hover {
+    transform: scale(1.05);
+    background-color: #2a2a2a;
+}
+
+.card-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.animated-card h3 {
+    color: #22C55E;
+    margin-bottom: 0.5rem;
+}
+
+.animated-card p {
+    font-size: 0.85rem;
+    color: #bbb;
+}
+
+/* 3. SVG Draw-on Path Animation */
+.svg-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    background: #1a1a2a;
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.draw-path {
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+    animation: drawLine 2.5s ease-out forwards;
+}
+
+@keyframes drawLine {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* 4. Animated SVG Scene (twinkling stars, pulsing moon, shooting star) */
+.star {
+    animation: twinkle 2s infinite alternate;
+}
+
+.twinkle1 { animation-delay: 0s; }
+.twinkle2 { animation-delay: 0.5s; }
+.twinkle3 { animation-delay: 1s; }
+.twinkle4 { animation-delay: 1.5s; }
+.twinkle5 { animation-delay: 0.8s; }
+
+@keyframes twinkle {
+    0% { opacity: 0.3; transform: scale(1); }
+    100% { opacity: 1; transform: scale(1.3); }
+}
+
+.moon {
+    animation: pulseGlow 3s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+    0% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+    100% { opacity: 0.7; transform: scale(1); }
+}
+
+.shooting-star {
+    animation: shoot 4s linear infinite;
+    transform-origin: 0% 0%;
+}
+
+@keyframes shoot {
+    0% {
+        transform: translateX(0) translateY(0);
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(250px) translateY(120px);
+        opacity: 0;
+    }
+}
+
+/* Footer */
+.page-footer {
+    text-align: center;
+    padding: 1.5rem;
+    background: #0a0a0a;
+    margin-top: 2rem;
+    border-top: 1px solid #22C55E;
+    font-size: 0.85rem;
+    color: #aaa;
+}

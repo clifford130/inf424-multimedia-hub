@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduStream Learning Hub – Creative Lab (Animations)</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dark-theme">
+  <header>
+    <div class="logo">🎨 EduStream Creative Lab</div>
+    <div class="student-info">
+      <p><strong>Full Name:</strong> CLIFFORD ISABOKE ONCHOMBA</p>
+      <p><strong>Student Number:</strong> INF/003/2022</p>
+      <p><strong>Course Code:</strong> INF 424</p>
+    </div>
+  </header>
+
+  <main>
+    <h1 class="page-title">CSS & SVG Animation Showcase</h1>
+
+    <!-- 1. CSS Loading Spinner -->
+    <section class="demo-section">
+      <h2>🌀 CSS Loading Spinner</h2>
+      <div class="spinner-container">
+        <div class="loading-spinner"></div>
+        <p>Infinite rotation – border-top-color technique</p>
+      </div>
+    </section>
+
+    <!-- 2. Card Component with Hover Transitions -->
+    <section class="demo-section">
+      <h2>✨ Interactive Card (hover transitions)</h2>
+      <div class="cards-grid">
+        <div class="animated-card">
+          <div class="card-icon">📘</div>
+          <h3>Multimedia Theory</h3>
+          <p>Hover to scale and change background – smooth CSS transition.</p>
+        </div>
+        <div class="animated-card">
+          <div class="card-icon">🎬</div>
+          <h3>Video Production</h3>
+          <p>Two properties: transform scale + background gradient shift.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. SVG Draw‑on Path Animation (Bezier curve) -->
+    <section class="demo-section">
+      <h2>✍️ SVG Draw‑on Path (stroke-dasharray / offset)</h2>
+      <div class="svg-container">
+        <svg width="400" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- Bezier curve path (C command) -->
+          <path class="draw-path" 
+                d="M 30 150 C 80 30, 150 170, 250 80 C 300 40, 350 130, 370 160" 
+                fill="none" 
+                stroke="#22C55E" 
+                stroke-width="4" 
+                stroke-linecap="round" />
+          <!-- decorative dots -->
+          <circle cx="30" cy="150" r="5" fill="#FFD966" />
+          <circle cx="370" cy="160" r="5" fill="#FFD966" />
+          <text x="10" y="190" fill="#aaa" font-size="12">Bezier curve draws itself →</text>
+        </svg>
+        <p>The green path animates from start to end using stroke-dashoffset.</p>
+      </div>
+    </section>
+
+    <!-- 4. Second SVG Illustration (6+ elements, animated property) -->
+    <section class="demo-section">
+      <h2>🌙 Animated SVG Scene (6+ elements)</h2>
+      <div class="svg-container">
+        <svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+          <!-- Background gradient sky -->
+          <defs>
+            <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#0a0f2a" />
+              <stop offset="100%" stop-color="#1a2a4f" />
+            </linearGradient>
+          </defs>
+          <rect width="400" height="300" fill="url(#skyGrad)" />
+
+          <!-- Stars (multiple elements) -->
+          <circle class="star twinkle1" cx="50" cy="40" r="2" fill="#FFF" />
+          <circle class="star twinkle2" cx="120" cy="70" r="1.5" fill="#FFF" />
+          <circle class="star twinkle3" cx="280" cy="30" r="2" fill="#FFF" />
+          <circle class="star twinkle4" cx="350" cy="90" r="1.8" fill="#FFF" />
+          <circle class="star twinkle5" cx="200" cy="50" r="1.2" fill="#FFF" />
+          
+          <!-- Moon (pulsing opacity) -->
+          <circle class="moon" cx="320" cy="70" r="30" fill="#FFEAA7" />
+          <circle cx="330" cy="65" r="6" fill="#0a0f2a" opacity="0.3" /> <!-- crater -->
+          
+          <!-- Mountains (static but part of 6+ elements) -->
+          <polygon points="0,250 80,160 160,250" fill="#2d4a3e" />
+          <polygon points="100,250 200,140 300,250" fill="#1e3a2f" />
+          <polygon points="220,250 320,170 400,250" fill="#2d4a3e" />
+          
+          <!-- Animated shooting star -->
+          <line class="shooting-star" x1="50" y1="20" x2="150" y2="80" stroke="#FFF" stroke-width="2" stroke-linecap="round" />
+          
+          <!-- Trees (simple) -->
+          <rect x="60" y="230" width="8" height="20" fill="#5a3e2b" />
+          <polygon points="48,230 64,200 80,230" fill="#2d6a4f" />
+          
+          <rect x="340" y="240" width="8" height="15" fill="#5a3e2b" />
+          <polygon points="330,240 344,215 358,240" fill="#2d6a4f" />
+        </svg>
+        <p>⭐ Animated stars (twinkling), moon (pulsing), and a shooting star (moving). 12+ SVG elements.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="page-footer">
+    <p>CLIFFORD ISABOKE ONCHOMBA | INF 424 | EduStream Multimedia Hub</p>
+  </footer>
+</body>
+</html>
