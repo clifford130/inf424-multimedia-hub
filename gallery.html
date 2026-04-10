@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduStream Learning Hub – Media Gallery</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dark-theme">
+  <header>
+  <div class="logo">🎓 EduStream Learning Hub</div>
+  <div class="student-info">
+    <p><strong>Full Name:</strong> CLIFFORD ISABOKE ONCHOMBA</p>
+    <p><strong>Student Number:</strong> INF/003/2022</p>
+    <p><strong>Course Code:</strong> INF 424</p>
+  </div>
+</header>
+
+<!-- Navigation Bar -->
+<nav class="main-nav">
+  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="audio-player.html" class="nav-link">🎵 Audio Lab</a>
+  <a href="video-player.html" class="nav-link">🎬 Video Lab</a>
+  <a href="animations.html" class="nav-link">✨ Animations</a>
+  <a href="gallery.html" class="nav-link">🖼️ Gallery</a>
+</nav>
+
+  <main>
+    <div class="gallery-container">
+      <h1 class="gallery-title">📚 Learning Resource Library</h1>
+      
+      <!-- Live search input -->
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="🔍 Filter by title..." aria-label="Search media by title">
+      </div>
+
+      <!-- Dynamic gallery grid -->
+      <div id="galleryGrid" class="gallery-grid"></div>
+    </div>
+  </main>
+
+  <footer class="page-footer">
+    <p>CLIFFORD ISABOKE ONCHOMBA | INF 424 | EduStream Multimedia Hub</p>
+  </footer>
+
+  <script>
+    // ---------- MEDIA LIBRARY DATA ARRAY (8+ objects) ----------
+    const mediaLibrary = [
+      { id: 1, title: "Introduction to HTML5", type: "video", thumbnail: "https://picsum.photos/id/0/300/200", duration: "12:34", description: "Learn the basics of HTML5 semantics and structure." },
+      { id: 2, title: "CSS Grid Masterclass", type: "video", thumbnail: "https://picsum.photos/id/1/300/200", duration: "18:22", description: "Build responsive layouts with CSS Grid." },
+      { id: 3, title: "JavaScript Promises", type: "video", thumbnail: "https://picsum.photos/id/2/300/200", duration: "09:47", description: "Async/await and promise chaining explained." },
+      { id: 4, title: "Podcast: Web Audio API", type: "audio", thumbnail: "https://picsum.photos/id/3/300/200", duration: "45:00", description: "Deep dive into audio synthesis and processing." },
+      { id: 5, title: "Interview with a Developer", type: "audio", thumbnail: "https://picsum.photos/id/4/300/200", duration: "32:15", description: "Career insights and coding tips." },
+      { id: 6, title: "SVG Illustration Guide", type: "image", thumbnail: "https://picsum.photos/id/5/300/200", duration: null, description: "Step‑by‑step vector graphics tutorial." },
+      { id: 7, title: "Camera API Workshop", type: "video", thumbnail: "https://picsum.photos/id/6/300/200", duration: "24:08", description: "Access webcam and apply filters." },
+      { id: 8, title: "UI Design Principles", type: "image", thumbnail: "https://picsum.photos/id/7/300/200", duration: null, description: "Visual hierarchy and colour theory." },
+      { id: 9, title: "Ambient Music Mix", type: "audio", thumbnail: "https://picsum.photos/id/8/300/200", duration: "1:12:30", description: "Relaxing study music." },
+      { id: 10, title: "React Components 101", type: "video", thumbnail: "https://picsum.photos/id/9/300/200", duration: "15:42", description: "Building reusable UI components." }
+    ];
+
+    // ---------- PURE FUNCTION: renderMediaCard(item) ----------
+    function renderMediaCard(item) {
+      // Determine badge colour based on type
+      let badgeClass = '';
+      let badgeText = '';
+      let actionButton = '';
+      
+      switch (item.type) {
+        case 'video':
+          badgeClass = 'badge-video';
+          badgeText = '🎥 VIDEO';
+          actionButton = `<button class="card-action" data-action="play">▶ Play</button>`;
+          break;
+        case 'audio':
+          badgeClass = 'badge-audio';
+          badgeText = '🎵 AUDIO';
+          actionButton = `<button class="card-action" data-action="play">🔊 Listen</button>`;
+          break;
+        case 'image':
+          badgeClass = 'badge-image';
+          badgeText = '🖼️ IMAGE';
+          actionButton = `<button class="card-action" data-action="view">👁️ View</button>`;
+          break;
+        default:
+          badgeClass = 'badge-default';
+          badgeText = 'MEDIA';
+          actionButton = `<button class="card-action" data-action="open">Open</button>`;
+      }
+
+      // Duration display (if exists)
+      const durationHtml = item.duration ? `<span class="card-duration">⏱️ ${item.duration}</span>` : '';
+
+      // Return HTML string (using data-* attributes for event delegation)
+      return `
+        <div class="media-card" data-id="${item.id}" data-title="${item.title.replace(/"/g, '&quot;')}" data-type="${item.type}">
+          <img src="${item.thumbnail}" alt="${item.title} thumbnail" class="card-thumbnail" loading="lazy">
+          <div class="card-content">
+            <h3 class="card-title">${item.title}</h3>
+            <div class="card-meta">
+              <span class="card-badge ${badgeClass}">${badgeText}</span>
+              ${durationHtml}
+            </div>
+            <p class="card-description">${item.description}</p>
+            ${actionButton}
+          </div>
+        </div>
+      `;
+    }
+
+    // ---------- RENDER FUNCTION (filters and maps) ----------
+    function renderGallery(filterText = '') {
+      const galleryGrid = document.getElementById('galleryGrid');
+      if (!galleryGrid) return;
+
+      // Filter data by title (case‑insensitive)
+      const filtered = mediaLibrary.filter(item =>
+        item.title.toLowerCase().includes(filterText.toLowerCase())
+      );
+
+      // Generate HTML using map + join
+      const cardsHtml = filtered.map(item => renderMediaCard(item)).join('');
+      galleryGrid.innerHTML = cardsHtml;
+    }
+
+    // ---------- LIVE SEARCH (filter on input) ----------
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        renderGallery(e.target.value);
+      });
+    }
+
+    // ---------- EVENT DELEGATION (single listener on parent container) ----------
+    const galleryContainer = document.getElementById('galleryGrid');
+    if (galleryContainer) {
+      galleryContainer.addEventListener('click', (e) => {
+        // Find closest .media-card (in case button or inner element is clicked)
+        const card = e.target.closest('.media-card');
+        if (!card) return;
+
+        // Retrieve data from dataset
+        const id = card.dataset.id;
+        const title = card.dataset.title;
+        const type = card.dataset.type;
+
+        // Log to console as required
+        console.log(`[Event Delegation] Card clicked → ID: ${id}, Title: "${title}", Type: ${type}`);
+
+        // Optional: show a friendly alert (not required but demonstrates interaction)
+        // alert(`You clicked: ${title} (${type})`);
+
+        // If the clicked element is a button, show additional action
+        const actionBtn = e.target.closest('.card-action');
+        if (actionBtn) {
+          const action = actionBtn.dataset.action;
+          console.log(`  Action: ${action} on ${title}`);
+          // You could redirect to the appropriate player page here
+          // For demo, just show a message
+          alert(`🎬 ${action.toUpperCase()} "${title}" (${type}) – demo mode`);
+        }
+      });
+    }
+
+    // Initial render
+    renderGallery();
+  </script>
+</body>
+</html>
