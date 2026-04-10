@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduStream Learning Hub – Audio Player</title>
+  <title>EduStream Learning Hub – Audio Player + Tone Generator</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -11,7 +11,6 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="dark-theme">
-  <!-- Reused Header (identical to index.html) -->
   <header>
     <div class="logo">EduStream Learning Hub</div>
     <div class="student-info">
@@ -22,22 +21,17 @@
   </header>
 
   <main>
+    <!-- Custom Audio Player (existing) -->
     <div class="media-player">
-      <!-- Visual Area (for audio, minimal) -->
       <div class="player-visual">
         <div id="status" class="status-overlay" aria-live="polite"></div>
       </div>
-      
-      <!-- Bottom Control Bar -->
       <div class="control-bar">
-        <!-- Left: Play/Pause -->
         <div class="control-left">
           <button id="play-pause" class="play-btn" type="button" aria-label="Play audio">
             <span id="play-icon">▶</span>
           </button>
         </div>
-        
-        <!-- Center: Progress + Time -->
         <div class="control-center">
           <div class="progress-container">
             <input id="seek-slider" type="range" min="0" max="100" value="0" step="0.1" aria-label="Seek through audio" />
@@ -46,8 +40,6 @@
             </div>
           </div>
         </div>
-        
-        <!-- Right: Controls -->
         <div class="control-right">
           <button id="rewind" class="control-btn" type="button" aria-label="Rewind 10 seconds">⏪</button>
           <button id="forward" class="control-btn" type="button" aria-label="Forward 10 seconds">⏩</button>
@@ -56,13 +48,36 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Hidden native audio element -->
     <audio id="audio" src="assets/audio/fun python.mp3"></audio>
+
+    <!-- ========== WEB AUDIO TONE GENERATOR SECTION ========== -->
+    <div class="tone-generator-section">
+      <h3>🎵 Web Audio Synthesizer</h3>
+      <div class="synth-controls">
+        <div class="waveform-selector">
+          <label>Waveform:</label>
+          <select id="waveformSelect" aria-label="Select waveform type">
+            <option value="sine">Sine</option>
+            <option value="square">Square</option>
+            <option value="sawtooth">Sawtooth</option>
+            <option value="triangle">Triangle</option>
+          </select>
+        </div>
+        <div class="note-buttons">
+          <button class="note-btn" data-freq="261.63" data-note="C4">C4 (261 Hz)</button>
+          <button class="note-btn" data-freq="293.66" data-note="D4">D4 (294 Hz)</button>
+          <button class="note-btn" data-freq="329.63" data-note="E4">E4 (330 Hz)</button>
+          <button class="note-btn" data-freq="440.00" data-note="A4">A4 (440 Hz)</button>
+        </div>
+        <p class="synth-info">⚡ Click any note – smooth envelope (attack 10ms, release 600ms) prevents clicks.</p>
+      </div>
+    </div>
   </main>
 
   <script>
-    // Grab UI elements
+    // ---------- Existing Audio Player Script (unchanged) ----------
     const audio = document.getElementById('audio');
     const playPauseBtn = document.getElementById('play-pause');
     const playIcon = document.getElementById('play-icon');
@@ -75,7 +90,6 @@
     const rewindBtn = document.getElementById('rewind');
     const forwardBtn = document.getElementById('forward');
 
-    // Status messages map (minimal)
     const statusMsg = {
       loadstart: 'loading…',
       loadeddata: '',
@@ -87,7 +101,6 @@
       error: 'error'
     };
 
-    // Format seconds → M:SS
     function fmt_time(seconds) {
       const s = Number.isFinite(seconds) && seconds >= 0 ? seconds : 0;
       const m = Math.floor(s / 60);
@@ -95,7 +108,6 @@
       return `${m}:${sec.toString().padStart(2, '0')}`;
     }
 
-    // Update UI helpers
     function updateStatus(eventType) {
       statusEl.textContent = statusMsg[eventType] || '';
     }
@@ -139,7 +151,6 @@
       syncMute();
     }
 
-    // Event handlers
     function togglePlay() {
       if (audio.paused || audio.ended) {
         audio.play().catch(err => {
@@ -199,7 +210,6 @@
       }
     }
 
-    // Attach listeners
     playPauseBtn.addEventListener('click', togglePlay);
     muteBtn.addEventListener('click', toggleMute);
     seekSlider.addEventListener('input', seekAudio);
@@ -219,10 +229,108 @@
     audio.addEventListener('durationchange', updateSeek);
     audio.addEventListener('error', () => updateStatus('error'));
 
-    // Initial UI sync
     audio.volume = 0.8;
     syncMute();
     syncPlayButton();
+
+    // ---------- WEB AUDIO TONE GENERATOR (Task B3) ----------
+    let audioCtx = null;          // lazy initialisation
+    let activeOscillator = null;
+    let activeGain = null;
+
+    // Helper: create AudioContext on first user interaction
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    // Stop any currently playing tone (with smooth release)
+    function stopCurrentTone() {
+      if (activeGain && activeOscillator) {
+        const now = audioCtx.currentTime;
+        // release envelope: ramp gain to 0 over 600ms (decay/release)
+        activeGain.gain.cancelScheduledValues(now);
+        activeGain.gain.setValueAtTime(activeGain.gain.value, now);
+        activeGain.gain.linearRampToValueAtTime(0, now + 0.6);
+        // stop oscillator after release finishes
+        activeOscillator.stop(now + 0.6);
+        activeOscillator = null;
+        activeGain = null;
+      }
+    }
+
+    // Play a frequency with selected waveform and smooth envelope
+    function playTone(frequency) {
+      // Ensure AudioContext is created and resumed (lazy, on user interaction)
+      const context = getAudioContext();
+      if (!context) return;
+
+      // Stop any ongoing tone to avoid overlapping (simple monophonic)
+      stopCurrentTone();
+
+      // Create oscillator and gain
+      const oscillator = context.createOscillator();
+      const gainNode = context.createGain();
+
+      // Get selected waveform from dropdown
+      const waveformSelect = document.getElementById('waveformSelect');
+      oscillator.type = waveformSelect.value;
+      oscillator.frequency.setValueAtTime(frequency, context.currentTime);
+
+      // Connect: oscillator → gain → destination
+      oscillator.connect(gainNode);
+      gainNode.connect(context.destination);
+
+      // Smooth envelope: attack 10ms (gain 0 → 0.3), then release later
+      const now = context.currentTime;
+      const attackTime = 0.01;    // 10ms
+      const releaseTime = 0.6;     // 600ms decay/release
+
+      gainNode.gain.cancelScheduledValues(now);
+      gainNode.gain.setValueAtTime(0, now);
+      // Attack: linear ramp to full volume (0.3 to avoid distortion)
+      gainNode.gain.linearRampToValueAtTime(0.3, now + attackTime);
+      // Schedule release after a short sustain (we will trigger release on button release?
+      // But requirement: envelope with attack 10ms and release/decay of at least 600ms.
+      // We'll keep note playing for 0.8 seconds then automatically release,
+      // OR we can stop on next button press. To demonstrate release clearly,
+      // we automatically release after 0.8 seconds (sustain length).
+      // But many implementations release when the note ends (on next note or after timeout).
+      // For clarity and to satisfy "release of at least 600ms", we schedule a release after 0.8s.
+      const sustainEnd = now + 0.8;
+      gainNode.gain.setValueAtTime(0.3, sustainEnd);
+      gainNode.gain.linearRampToValueAtTime(0, sustainEnd + releaseTime);
+      oscillator.stop(sustainEnd + releaseTime);
+
+      // Store references to possibly stop early on next note
+      activeOscillator = oscillator;
+      activeGain = gainNode;
+
+      oscillator.start();
+    }
+
+    // Attach event listeners to all note buttons
+    const noteButtons = document.querySelectorAll('.note-btn');
+    noteButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const freq = parseFloat(btn.getAttribute('data-freq'));
+        if (!isNaN(freq)) {
+          playTone(freq);
+        }
+      });
+    });
+
+    // Optional: ensure AudioContext resumes if user clicks waveform selector (still user interaction)
+    const waveformSelect = document.getElementById('waveformSelect');
+    waveformSelect.addEventListener('click', () => {
+      getAudioContext(); // initialises on first click
+    });
   </script>
 </body>
 </html>
