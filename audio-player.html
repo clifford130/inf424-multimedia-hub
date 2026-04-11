@@ -34,10 +34,6 @@
     <div class="media-player">
       <div class="player-visual">
         <div id="status" class="status-overlay" aria-live="polite"></div>
-        <!-- Loading overlay -->
-        <div id="audioLoader" class="loading-overlay">
-          <div class="loading-spinner"></div>
-        </div>
       </div>
       <div class="control-bar">
         <div class="control-left">
@@ -105,7 +101,6 @@
     const muteBtn = document.getElementById('mute-toggle');
     const rewindBtn = document.getElementById('rewind');
     const forwardBtn = document.getElementById('forward');
-    const loader = document.getElementById('audioLoader');
 
     const statusMsg = {
       loadstart: 'loading…',
@@ -127,11 +122,6 @@
 
     function updateStatus(eventType) {
       statusEl.textContent = statusMsg[eventType] || '';
-      if (eventType === 'loadstart' || eventType === 'waiting') {
-        loader.style.display = 'flex';
-      } else {
-        loader.style.display = 'none';
-      }
     }
 
     function updateSeek() {

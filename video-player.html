@@ -42,11 +42,6 @@
         Your browser does not support the video tag. Please update your browser.
       </video>
 
-      <!-- Loading overlay -->
-      <div id="videoLoader" class="loading-overlay">
-        <div class="loading-spinner"></div>
-      </div>
-
       <!-- bottom control bar -->
       <div class="control-bar">
         <!-- Play/Pause button -->
@@ -118,7 +113,6 @@ This quick tutorial shows you how to import files through HTML code. The video s
       const speedSelect = document.getElementById('playbackSpeedSelect');
       const fullscreenBtn = document.getElementById('fullscreenBtn');
       const eventStatusSpan = document.getElementById('videoEventStatus');
-      const loader = document.getElementById('videoLoader');
 
       // ----- H format time as M:SS  -----
       function formatTime(seconds) {
@@ -289,7 +283,6 @@ This quick tutorial shows you how to import files through HTML code. The video s
       video.addEventListener('error', (e) => {
         setStatusEvent('error', video.error ? video.error.message : 'Media loading failure');
         console.error('Video error:', video.error);
-        loader.style.display = 'none'; // hide loader on error
       });
       // timeupdate for seek bar
       video.addEventListener('timeupdate', () => {
@@ -305,18 +298,9 @@ This quick tutorial shows you how to import files through HTML code. The video s
         // Set initial volume consistency
         video.volume = parseFloat(volumeSlider.value);
         video.muted = false;
-      });
-
-      // Loader event listeners
-      video.addEventListener('waiting', () => {
-        loader.style.display = 'flex';
-      });
-      video.addEventListener('playing', () => {
-        loader.style.display = 'none';
         syncMuteUI();
       });
       video.addEventListener('canplay', () => {
-        loader.style.display = 'none';
         // optional: just friendly status
         if (eventStatusSpan.textContent.includes('waiting')) {
           setStatusEvent('canplay', 'ready to play');
