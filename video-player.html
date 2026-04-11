@@ -308,12 +308,6 @@ This quick tutorial shows you how to import files through HTML code. The video s
       });
 
       // Loader event listeners
-      video.addEventListener('loadstart', () => {
-        loader.style.display = 'flex';
-      });
-      video.addEventListener('canplay', () => {
-        loader.style.display = 'none';
-      });
       video.addEventListener('waiting', () => {
         loader.style.display = 'flex';
       });
@@ -322,6 +316,7 @@ This quick tutorial shows you how to import files through HTML code. The video s
         syncMuteUI();
       });
       video.addEventListener('canplay', () => {
+        loader.style.display = 'none';
         // optional: just friendly status
         if (eventStatusSpan.textContent.includes('waiting')) {
           setStatusEvent('canplay', 'ready to play');
