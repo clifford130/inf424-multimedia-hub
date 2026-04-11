@@ -19,39 +19,39 @@
   </div>
 </header>
 
-<!-- Navigation Bar -->
+<!-- nav bar  -->
 <nav class="main-nav">
-  <a href="index.html" class="nav-link">🏠 Home</a>
+  <a href="index.html" class="nav-link"> Home</a>
   <a href="audio-player.html" class="nav-link">🎵 Audio Lab</a>
-  <a href="video-player.html" class="nav-link active">🎬 Video Lab</a>
-  <a href="animations.html" class="nav-link">✨ Animations</a>
-  <a href="gallery.html" class="nav-link">🖼️ Gallery</a>
+  <a href="video-player.html" class="nav-link active">Video Lab</a>
+  <a href="animations.html" class="nav-link"> Animations</a>
+  <a href="gallery.html" class="nav-link"> Gallery</a>
 </nav>
 
   <main>
     <div class="media-player video-custom-player">
-      <!-- video element: no native controls, includes poster & free CC0 video from Pexels-compatible source -->
+      <!-- video element -->
       <video id="eduVideo" 
              class="custom-video-element"
              poster="assets/images/py.jpg"
              preload="metadata"
              crossorigin="anonymous">
-        <!-- MP4 source: local video file -->
+        <!-- local video file -->
         <source src="assets/video/raddy programming.mp4" type="video/mp4">
-        <!-- fallback message if video cannot load -->
+        <!-- fallback  -->
         Your browser does not support the video tag. Please update your browser.
       </video>
 
-      <!-- bottom control bar (mirror design from audio player, extended with speed & fullscreen) -->
+      <!-- bottom control bar -->
       <div class="control-bar">
-        <!-- LEFT: Play/Pause button -->
+        <!-- Play/Pause button -->
         <div class="control-left">
-          <button id="videoPlayPauseBtn" class="play-btn" type="button" aria-label="Play video">
+          <button id="videoPlayPauseBtn" class="play-btn" type="button" aria-label="Play video" title="Play/Pause">
             <span id="videoPlayIcon">▶</span>
           </button>
         </div>
 
-        <!-- CENTER: progress seek bar + time display (M:SS format) -->
+        <!--  progress seek bar  -->
         <div class="control-center">
           <div class="progress-container">
             <input id="videoSeekSlider" type="range" min="0" max="100" value="0" step="0.1" aria-label="Video seek bar" />
@@ -61,14 +61,14 @@
           </div>
         </div>
 
-        <!-- RIGHT: volume, mute, playback speed selector, fullscreen -->
+        <!-- volume, mute, playback speed select, fullscreen -->
         <div class="control-right video-extras">
-          <!-- volume slider & mute toggle (consistent with audio player) -->
-          <button id="videoMuteBtn" class="control-btn" type="button" aria-label="Mute video">🔊</button>
-          <input id="videoVolumeSlider" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="Volume" />
+          <!-- volume slider & mute toggle  -->
+          <button id="videoMuteBtn" class="control-btn" type="button" aria-label="Mute video" title="Mute/Unmute">🔊</button>
+          <input id="videoVolumeSlider" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="Volume" title="Adjust volume" />
           
-          <!-- playback speed selector (required: 0.75x, 1x, 1.25x, 1.5x, 2x) -->
-          <select id="playbackSpeedSelect" class="speed-selector" aria-label="Playback speed">
+          <!-- playback speed selector -->
+          <select id="playbackSpeedSelect" class="speed-selector" aria-label="Playback speed" title="Change playback speed">
             <option value="0.75">0.75x</option>
             <option value="1.0" selected>1.0x</option>
             <option value="1.25">1.25x</option>
@@ -77,17 +77,17 @@
           </select>
 
           <!-- fullscreen button -->
-          <button id="fullscreenBtn" class="control-btn fullscreen-icon" type="button" aria-label="Fullscreen">⛶</button>
+          <button id="fullscreenBtn" class="control-btn fullscreen-icon" type="button" aria-label="Fullscreen" title="Toggle fullscreen">⛶</button>
         </div>
       </div>
     </div>
 
-    <!-- Status display paragraph: shows real-time media events, distinction play vs playing -->
+    <!-- Status display paragraph:-->
     <div class="status-panel" aria-live="polite">
       <strong>🎬 Player status:</strong> <span id="videoEventStatus">Waiting for interaction</span>
     </div>
 
-    <!-- Accessible transcript / caption panel (static text, 50+ words describing the video content) -->
+    <!-- Accessible transcript -->
     <div class="transcript-panel" aria-label="Video transcript and description">
       <h3>📄 Video transcript &amp; description</h3>
       <p>
@@ -114,7 +114,7 @@ This quick tutorial shows you how to import files through HTML code. The video s
       const fullscreenBtn = document.getElementById('fullscreenBtn');
       const eventStatusSpan = document.getElementById('videoEventStatus');
 
-      // ----- Helper: format time as M:SS (same as audio player) -----
+      // ----- H format time as M:SS  -----
       function formatTime(seconds) {
         if (isNaN(seconds) || !isFinite(seconds)) return '0:00';
         const mins = Math.floor(seconds / 60);
@@ -122,7 +122,7 @@ This quick tutorial shows you how to import files through HTML code. The video s
         return `${mins}:${secs.toString().padStart(2, '0')}`;
       }
 
-      // ----- Update UI: progress bar + time display -----
+      // ----- Update UI----- progress bar + time display -----
       function updateProgressAndTime() {
         if (!video.duration || isNaN(video.duration)) {
           seekSlider.value = 0;
@@ -136,7 +136,7 @@ This quick tutorial shows you how to import files through HTML code. The video s
         durationSpan.textContent = formatTime(video.duration);
       }
 
-      // ----- Sync play/pause button icon & ARIA label -----
+      // ----- Sync play/pause button -----
       function syncPlayPauseButton() {
         if (video.paused || video.ended) {
           playIconSpan.textContent = '▶';
@@ -145,8 +145,7 @@ This quick tutorial shows you how to import files through HTML code. The video s
           playIconSpan.textContent = '❚❚';
           playPauseBtn.setAttribute('aria-label', 'Pause video');
         }
-        // if video ended, show replay semantics but icon remains '▶'? actually we want distinct replay icon? 
-        // But the ended state: we show '▶' so user can replay.
+        // video ended, 
         if (video.ended) {
           playIconSpan.textContent = '↻';  // replay symbol for clarity
           playPauseBtn.setAttribute('aria-label', 'Replay video');
@@ -166,7 +165,7 @@ This quick tutorial shows you how to import files through HTML code. The video s
         }
       }
 
-      // ----- Volume change handler (slider & internal consistency)-----
+      // ----- Volume change -----
       function handleVolumeChange() {
         const newVol = parseFloat(volumeSlider.value);
         video.volume = newVol;
@@ -218,7 +217,7 @@ This quick tutorial shows you how to import files through HTML code. The video s
         }
       }
 
-      // ----- Fullscreen handling (requestFullscreen on video element) -----
+      // ----- Fullscreen handling  -----
       function toggleFullscreen() {
         if (!document.fullscreenElement) {
           video.requestFullscreen().catch(err => {
@@ -230,7 +229,7 @@ This quick tutorial shows you how to import files through HTML code. The video s
         }
       }
 
-      // ----- Update status display with distinction between 'play' and 'playing' -----
+      // ----- Update status display  'play' and 'playing' -----
       function setStatusEvent(eventType, detailMsg = '') {
         let displayText = '';
         switch (eventType) {
@@ -260,7 +259,7 @@ This quick tutorial shows you how to import files through HTML code. The video s
         console.log(`[VIDEO EVENT] ${eventType}: ${displayText}`);
       }
 
-      // ----- Event listeners to demonstrate full state machine + distinction play/playing -----
+      // ----- Event listeners  -----
       video.addEventListener('play', () => {
         setStatusEvent('play');
         syncPlayPauseButton();
@@ -285,7 +284,7 @@ This quick tutorial shows you how to import files through HTML code. The video s
         setStatusEvent('error', video.error ? video.error.message : 'Media loading failure');
         console.error('Video error:', video.error);
       });
-      // Additional: timeupdate for seek bar
+      // timeupdate for seek bar
       video.addEventListener('timeupdate', () => {
         updateProgressAndTime();
       });
@@ -308,11 +307,11 @@ This quick tutorial shows you how to import files through HTML code. The video s
         }
       });
 
-      // ---- Keyboard shortcuts (Space, M, Left/Right arrows) as extension for enhanced UX ----
+      // ---- Keyboard shortcuts----
       function handleVideoKeyboard(e) {
         const activeEl = document.activeElement;
         if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT' || activeEl.tagName === 'TEXTAREA')) {
-          return; // allow typing in inputs
+          return; //  typing in inputs
         }
         const key = e.code;
         switch (key) {
@@ -339,7 +338,7 @@ This quick tutorial shows you how to import files through HTML code. The video s
         }
       }
 
-      // ----- Wire UI controls -----
+      // -----  UI controls -----
       playPauseBtn.addEventListener('click', togglePlayPause);
       seekSlider.addEventListener('input', seekVideo);
       muteBtn.addEventListener('click', toggleMute);
@@ -348,7 +347,7 @@ This quick tutorial shows you how to import files through HTML code. The video s
       fullscreenBtn.addEventListener('click', toggleFullscreen);
       document.addEventListener('keydown', handleVideoKeyboard);
 
-      // Additional fullscreen change event to possibly update icon (optional but user-friendly)
+      // Additional fullscreen change to update icon
       document.addEventListener('fullscreenchange', () => {
         if (document.fullscreenElement) {
           fullscreenBtn.setAttribute('aria-label', 'Exit fullscreen');
@@ -359,7 +358,7 @@ This quick tutorial shows you how to import files through HTML code. The video s
         }
       });
 
-      // Extra: ensure volume slider reflects video volume after external changes (e.g., mute unmute)
+      // ensuring volume slider reflects video volume after external changes (e.g., mute unmute)
       video.addEventListener('volumechange', () => {
         syncMuteUI();
       });
@@ -375,12 +374,12 @@ This quick tutorial shows you how to import files through HTML code. The video s
       setPlaybackSpeed();        // default speed = 1.0
       updateProgressAndTime();
 
-      // handle case where duration not immediately ready
+      // handle case when duration not  ready
       if (video.readyState >= 1) {
         updateProgressAndTime();
       }
 
-      // If video source fails (network error), display explicit error on status
+      // If video fails , display  error on status
       video.addEventListener('stalled', () => {
         setStatusEvent('stalled', 'network stalled – possible slow connection');
       });

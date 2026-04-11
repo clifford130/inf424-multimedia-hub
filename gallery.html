@@ -22,11 +22,11 @@
 
 <!-- Navigation Bar -->
 <nav class="main-nav">
-  <a href="index.html" class="nav-link">🏠 Home</a>
-  <a href="audio-player.html" class="nav-link">🎵 Audio Lab</a>
-  <a href="video-player.html" class="nav-link">🎬 Video Lab</a>
-  <a href="animations.html" class="nav-link">✨ Animations</a>
-  <a href="gallery.html" class="nav-link active">🖼️ Gallery</a>
+  <a href="index.html" class="nav-link"> Home</a>
+  <a href="audio-player.html" class="nav-link"> Audio Lab</a>
+  <a href="video-player.html" class="nav-link"> Video Lab</a>
+  <a href="animations.html" class="nav-link"> Animations</a>
+  <a href="gallery.html" class="nav-link active"> Gallery</a>
 </nav>
 
   <main>
@@ -48,7 +48,7 @@
   </footer>
 
   <script>
-    // ---------- MEDIA LIBRARY DATA ARRAY (8+ objects) ----------
+    // ---------- MEDIA LIBRARY DATA ARRAY ----------
     const mediaLibrary = [
       // Videos
       { id: 1, title: "Convert Python to Executable", type: "video", thumbnail: "assets/video/poster.jpg", duration: "15:42", description: "Learn how to convert Python scripts to standalone executables." },
@@ -74,7 +74,7 @@
       { id: 17, title: "Python Logo", type: "image", thumbnail: "assets/images/py.jpg", duration: null, description: "Python programming language logo." }
     ];
 
-    // ---------- PURE FUNCTION: renderMediaCard(item) ----------
+    // ----------  renderMediaCard ----------
     function renderMediaCard(item) {
       // Determine badge colour based on type
       let badgeClass = '';
@@ -103,10 +103,10 @@
           actionButton = `<button class="card-action" data-action="open">Open</button>`;
       }
 
-      // Duration display (if exists)
+      // Duration display if exists
       const durationHtml = item.duration ? `<span class="card-duration">⏱️ ${item.duration}</span>` : '';
 
-      // Return HTML string (using data-* attributes for event delegation)
+      // Return HTML string 
       return `
         <div class="media-card" data-id="${item.id}" data-title="${item.title.replace(/"/g, '&quot;')}" data-type="${item.type}">
           <img src="${item.thumbnail}" alt="${item.title} thumbnail" class="card-thumbnail" loading="lazy">
@@ -123,12 +123,12 @@
       `;
     }
 
-    // ---------- RENDER FUNCTION (filters and maps) ----------
+    // ---------- RENDER fnctn filters and maps ----------
     function renderGallery(filterText = '') {
       const galleryGrid = document.getElementById('galleryGrid');
       if (!galleryGrid) return;
 
-      // Filter data by title (case‑insensitive)
+      // Filter data by title 
       const filtered = mediaLibrary.filter(item =>
         item.title.toLowerCase().includes(filterText.toLowerCase())
       );
@@ -138,7 +138,7 @@
       galleryGrid.innerHTML = cardsHtml;
     }
 
-    // ---------- LIVE SEARCH (filter on input) ----------
+    // ---------- LIVE SEARCH  ----------
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
@@ -146,7 +146,7 @@
       });
     }
 
-    // ---------- EVENT DELEGATION (single listener on parent container) ----------
+    // ---------- EVENT listner ----------
     const galleryContainer = document.getElementById('galleryGrid');
     if (galleryContainer) {
       galleryContainer.addEventListener('click', (e) => {
@@ -159,19 +159,18 @@
         const title = card.dataset.title;
         const type = card.dataset.type;
 
-        // Log to console as required
+        // console log
         console.log(`[Event Delegation] Card clicked → ID: ${id}, Title: "${title}", Type: ${type}`);
 
-        // Optional: show a friendly alert (not required but demonstrates interaction)
-        // alert(`You clicked: ${title} (${type})`);
+        //
 
         // If the clicked element is a button, show additional action
         const actionBtn = e.target.closest('.card-action');
         if (actionBtn) {
           const action = actionBtn.dataset.action;
           console.log(`  Action: ${action} on ${title}`);
-          // You could redirect to the appropriate player page here
-          // For demo, just show a message
+          
+          // demo message
           alert(`🎬 ${action.toUpperCase()} "${title}" (${type}) – demo mode`);
         }
       });

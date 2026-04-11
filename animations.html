@@ -22,28 +22,28 @@
 
 <!-- Navigation Bar -->
 <nav class="main-nav">
-  <a href="index.html" class="nav-link">🏠 Home</a>
-  <a href="audio-player.html" class="nav-link">🎵 Audio Lab</a>
-  <a href="video-player.html" class="nav-link">🎬 Video Lab</a>
-  <a href="animations.html" class="nav-link  active">✨ Animations</a>
-  <a href="gallery.html" class="nav-link">🖼️ Gallery</a>
+  <a href="index.html" class="nav-link"> Home</a>
+  <a href="audio-player.html" class="nav-link">Audio Lab</a>
+  <a href="video-player.html" class="nav-link"> Video Lab</a>
+  <a href="animations.html" class="nav-link  active"> Animations</a>
+  <a href="gallery.html" class="nav-link"> Gallery</a>
 </nav>
 
   <main>
     <h1 class="page-title">CSS, SVG & Camera Playground</h1>
 
-    <!-- 1. CSS Loading Spinner -->
+    <!-- CSS Loading Spinner -->
     <section class="demo-section">
-      <h2>🌀 CSS Loading Spinner</h2>
+      <h2>  Loading Spinner</h2>
       <div class="spinner-container">
         <div class="loading-spinner"></div>
         <p>Infinite rotation – border-top-color technique</p>
       </div>
     </section>
 
-    <!-- 2. Card Component with Hover Transitions -->
+    <!--  Card Component with Hover Transitions -->
     <section class="demo-section">
-      <h2>✨ Interactive Card (hover transitions)</h2>
+      <h2> Interactive Card </h2>
       <div class="cards-grid">
         <div class="animated-card">
           <div class="card-icon">📘</div>
@@ -58,9 +58,9 @@
       </div>
     </section>
 
-    <!-- 3. SVG Draw‑on Path Animation (Bezier curve) -->
+    <!--  SVG Draw‑on Path Animation (Bezier curve) -->
     <section class="demo-section">
-      <h2>✍️ SVG Draw‑on Path (stroke-dasharray / offset)</h2>
+      <h2> SVG Draw‑on Path </h2>
       <div class="svg-container">
         <svg width="400" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
           <path class="draw-path" 
@@ -77,9 +77,9 @@
       </div>
     </section>
 
-    <!-- 4. Second SVG Illustration (6+ elements, animated property) -->
+    <!--  Second SVG Illustration (6+ elements, animated property) -->
     <section class="demo-section">
-      <h2>🌙 Animated SVG Scene (6+ elements)</h2>
+      <h2>Animated SVG Scene </h2>
       <div class="svg-container">
         <svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -109,7 +109,7 @@
       </div>
     </section>
 
-    <!-- ========== 5. LIVE CAMERA FILTER (Task C2) ========== -->
+    <!--  LIVE CAMERA FILTER  -->
     <section class="demo-section camera-section">
       <h2>📸 Live Camera Filter Studio</h2>
       <div class="camera-wrapper">
@@ -129,9 +129,9 @@
         <!-- Status messages -->
         <div id="cameraStatus" class="camera-status" aria-live="polite"></div>
 
-        <!-- Preview canvas for captured/filtered image -->
+        <!-- Preview captured/filtered image -->
         <div class="preview-area">
-          <h3>Preview (Captured / Filtered)</h3>
+          <h3>Preview Captured / Filtered</h3>
           <canvas id="previewCanvas" width="640" height="480"></canvas>
         </div>
       </div>
@@ -166,7 +166,7 @@
       }
 
       function clearMessage() {
-        statusDiv.innerHTML = '✅ Ready. Click "Start Camera".';
+        statusDiv.innerHTML = ' Ready!!! Click "Start Camera".';
         statusDiv.style.color = '#ccc';
       }
 
@@ -176,7 +176,7 @@
         downloadBtn.disabled = !enabled;
       }
 
-      // Start camera with error handling for NotAllowedError, NotFoundError, NotReadableError
+      // Start camera with error handling f
       async function startCamera() {
         if (mediaStream) {
           mediaStream.getTracks().forEach(track => track.stop());
@@ -215,7 +215,7 @@
         }
       }
 
-      // Capture current video frame to canvas and store ImageData
+      // Capture current video frame to  store ImageData
       function captureFrame() {
         if (!video.videoWidth || !video.videoHeight) {
           showMessage('⚠️ No video feed. Please start the camera first.', true);
@@ -240,7 +240,7 @@
         downloadBtn.disabled = false;
       }
 
-      // Apply greyscale using human-perception luminance formula
+      // Apply greyscale 
       function applyGreyscale() {
         if (!currentImageData) {
           showMessage('⚠️ No captured frame. Click "Capture Frame" first.', true);
@@ -261,7 +261,7 @@
         showMessage('⚫ Greyscale filter applied (ITU-R BT.601 formula).');
       }
 
-      // Download preview canvas as PNG
+      // Download preview  as PNG
       function downloadPNG() {
         if (!previewCanvas.width || !previewCanvas.height) {
           showMessage('⚠️ No image to download. Capture or filter a frame first.', true);

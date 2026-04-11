@@ -1,4 +1,4 @@
-/* Reset and base styles */
+/* Reset and base  */
 * {
     margin: 0;
     padding: 0;
@@ -11,8 +11,7 @@ body {
     color: #333;
     background-color: #f4f4f4;
 }
-
-/* Header styles */
+*/
 header {
     background: linear-gradient(135deg, #22C55E, #166534);
     color: white;
@@ -44,7 +43,7 @@ main {
     padding: 0 2rem;
 }
 
-/* Responsive design */
+/* Responsive  */
 @media (max-width: 768px) {
     header {
         flex-direction: column;
@@ -60,7 +59,7 @@ main {
     }
 }
 
-/* ========== DARK THEME (shared for audio & video players) ========== */
+/* DARK THEME (shared for audio & video players) */
 .dark-theme body {
     background-color: #181818;
     color: #FFFFFF;
@@ -94,7 +93,7 @@ main {
     box-shadow: 0 8px 20px rgba(0,0,0,0.5);
 }
 
-/* Audio player specific height (if no video) */
+/* Audio player specific height  */
 .media-player:not(.video-custom-player) {
     height: 450px;
 }
@@ -362,12 +361,12 @@ main {
     }
 }
 
-/* Keep audio player visual area consistent */
+/*  audio player visual area  */
 .media-player .player-visual {
     background: #0B0B0B;
 }
 
-/* ========== WEB AUDIO TONE GENERATOR STYLES (Task B3) ========== */
+/* WEB AUDIO TONE GENERATOR  (*/
 .tone-generator-section {
     margin-top: 2rem;
     background: #0e0e0e;
@@ -465,7 +464,7 @@ main {
     }
 }
 
-/* ========== ANIMATIONS PAGE (Task C1) ========== */
+/*  ANIMATIONS PAGE (= */
 .page-title {
     text-align: center;
     margin-bottom: 2rem;
@@ -513,7 +512,7 @@ main {
     }
 }
 
-/* 2. Card Component with Hover Transitions */
+/*  Card Component with Hover Transitions */
 .cards-grid {
     display: flex;
     gap: 1.5rem;
@@ -574,7 +573,7 @@ main {
     }
 }
 
-/* 4. Animated SVG Scene (twinkling stars, pulsing moon, shooting star) */
+
 .star {
     animation: twinkle 2s infinite alternate;
 }
@@ -630,7 +629,7 @@ main {
     color: #aaa;
 }
 
-/* ========== CAMERA SECTION (inside animations.html) ========== */
+/*  CAMERA SECTION   */
 .camera-section {
     background: #0e0e0e;
 }
@@ -737,7 +736,7 @@ main {
     }
 }
 
-/* ========== GALLERY PAGE (Task D1) ========== */
+/* GALLERY PAGE )  */
 .gallery-container {
     max-width: 1200px;
     width: 100%;
@@ -777,7 +776,7 @@ main {
     box-shadow: 0 0 8px rgba(34,197,94,0.5);
 }
 
-/* Responsive CSS Grid (auto-fill, minmax 260px) */
+/* Responsive CSS Grid  */
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -893,7 +892,7 @@ main {
     transform: scale(0.98);
 }
 
-/* Responsive: ensure grid works on mobile */
+/* R ensuring grid works on mobile */
 @media (max-width: 640px) {
     .gallery-grid {
         grid-template-columns: 1fr;
@@ -904,7 +903,7 @@ main {
 }
 
 
-/* ========== NAVIGATION BAR (Task D2) ========== */
+/*  NAVIGATION BAR  */
 .main-nav {
     background: #0a0a0a;
     display: flex;
@@ -942,7 +941,7 @@ main {
     pointer-events: none; /* optional: makes active link non-clickable */
 }
 
-/* Footer (already partially defined, ensure consistency) */
+/* Footer  */
 .page-footer {
     text-align: center;
     padding: 1.2rem;
